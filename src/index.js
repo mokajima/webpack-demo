@@ -1,14 +1,24 @@
-function getComponent() {
-  return import(/* webpackChunkName: "lodash" */ 'lodash').then(({ default: _ }) => {
-    let element = document.createElement('div');
+import _ from 'lodash';
 
-    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+function component() {
+  const element = document.createElement('div');
+  const button = document.createElement('button');
+  const br = document.createElement('br');
 
-    return element;
+  button.textContent = 'Click me and look at the console!';
+  element.textContent = _.join(['Hello', 'webpack'], ' ');
+  element.appendChild(br);
+  element.appendChild(button);
 
-  }).catch(error => 'An error occurred while loading the component');
+  // Note that because a network request is involved, some indication
+  // of loading would need to be shown in a production-level site/app.
+  button.onclick = e => import(/* webpackChunkName: "print" */ './print').then(module => {
+    const print = module.default;
+
+    print();
+  });
+
+  return element;
 }
 
-getComponent().then(component => {
-  document.body.appendChild(component);
-})
+document.body.appendChild(component());
